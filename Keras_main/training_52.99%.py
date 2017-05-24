@@ -5,15 +5,15 @@ import jieba
 import jieba.analyse
 import numpy as np
 import copy
+import datetime
 from keras.models import Sequential
 from keras.layers import Dense,Dropout,Activation,Embedding
 from keras.layers import Conv1D,GlobalMaxPooling1D
-from keras.utils import np_utils
-from keras.preprocessing import sequence
+from keras.utils.np_utils import to_categorical
 
 global len_of_count
 len_of_count = 0
-short_text = 400
+short_text = 600
 useless_word = ['，','：','‘','’','','。','—','——',
                 '你','我','他','它','咱们','大家','自己',
                 '这','那','这儿','那边','各','每','的','了',
@@ -79,7 +79,6 @@ all_text = fake.append(truth, ignore_index=True)
 all_text = all_text.append(not_sure,ignore_index=True)
 #get the pure word
 all_text[0] = list(map(lambda s: remove_mess(s),all_text[0]))
-print(all_text)
 #get the maxlen
 all_text['len'] = list(map(lambda s:len(s),all_text[0]))
 long_text = int(max(list(all_text['len']))*0.4*0.5)
@@ -97,13 +96,14 @@ all_text['seq'] = word_seq(all_text, maxlen)
 idx = list(range(len(all_text)))
 np.random.shuffle(idx)
 all_text = all_text.loc[idx]
+print(all_text)
 #initialize the training data
 x_train = np.array(list(all_text['seq']))
 y_train = np.array(list(all_text['label']))
+y_train = to_categorical(y_train, num_classes=3)
 
 #setup the parameter of the layers
-embedding_vector_length = 256
-min_count = 5
+embedding_vector_length = 32
 batch_size = 32
 nb_epoch = 10
 nb_filter = 128
@@ -119,7 +119,7 @@ model.add(Embedding(len_of_count,
                     input_length=maxlen))
 #Convolution-1D layer
 model.add(Conv1D(activation="relu",
-                 filters=128,
+                 filters=256,
                  kernel_size=3,
                  padding="valid"))
 #Pooling layer
@@ -129,11 +129,11 @@ model.add(Dense(128))
 model.add(Dropout(0.2))
 model.add(Activation('relu'))
 #Output layer
-model.add(Dense(1))
-model.add(Activation('sigmoid'))
+model.add(Dense(3))
+model.add(Activation('softmax'))
 #compile the model
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
+model.compile(loss='categorical_crossentropy',
+              optimizer='Adam',
               metrics=['accuracy'])
 #Fit the model
 print('Train...')
@@ -141,3 +141,9 @@ model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=nb_epoch)
 
+score = model.evaluate(x_train, y_train, verbose=0)
+print('train score:', score[0])
+print('train accuracy:', score[1])
+
+time = str(datetime.datetime.now())[:10]
+model.save(str(score[1])[:5]+'_'+time+'.h5')
