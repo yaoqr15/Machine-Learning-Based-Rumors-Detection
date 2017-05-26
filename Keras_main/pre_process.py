@@ -7,7 +7,8 @@ import copy
 
 # ######################   initial the parameter   ####################### #
 short_text = 600
-useless_word = ['，','：','‘','’','','。','—','——',
+useless_word = list(pd.read_excel("useless_1.xls",header=None)[0])
+useless_word += ['，','：','‘','’','','。','—','——',
                 '你','我','他','它','咱们','大家','自己',
                 '这','那','这儿','那边','各','每','的','了',
                 '谁','什么','哪','怎么','哪里','几','地']
@@ -37,8 +38,8 @@ def cut_the_word(str_in):
 # Read from "datasheet.csv",then assign each a number
 def word_seq(x, maxlength):
     store = list(map(lambda s: cut_the_word(s), x[0]))
-    tmp = pd.read_csv('datasheet.csv', header=None, index_col=0)
-    select = tmp[tmp[1] > 1]
+    tmp = pd.read_csv('data_sheet.csv', header=None, index_col=0)
+    select = tmp[tmp[1] > 11]
     count = copy.deepcopy(select[1])
     count[:] = range(1, 1 + len(count))
 
