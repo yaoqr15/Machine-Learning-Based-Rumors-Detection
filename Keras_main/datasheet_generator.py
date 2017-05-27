@@ -5,7 +5,7 @@ from pre_process import remove_mess, cut_the_word
 # the function to get word sequence
 # Read from "datasheet.csv",then assign each a number
 def generator(x):
-    store = list(map(lambda s: cut_the_word(s), x[0]))
+    store = list(map(lambda s: cut_the_word(s), x['passage']))
     content = []
     for i in store:
         content += i
@@ -22,7 +22,7 @@ def get_datasheet(file_1,file_2,file_3):
     all_text = fake.append(truth, ignore_index=True)
     all_text = all_text.append(not_sure, ignore_index=True)
     # get the pure word
-    all_text[0] = list(map(lambda s: remove_mess(s), all_text[0]))
+    all_text['passage'] = list(map(lambda s: remove_mess(s), all_text[0]))
     generator(all_text)
 
 get_datasheet("fake.xls", "truth.xls", "not_sure.xls")

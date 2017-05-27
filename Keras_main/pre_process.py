@@ -37,7 +37,7 @@ def cut_the_word(str_in):
 # the function to get word sequence
 # Read from "datasheet.csv",then assign each a number
 def word_seq(x, maxlength):
-    store = list(map(lambda s: cut_the_word(s), x[0]))
+    store = list(map(lambda s: cut_the_word(s), x['passage']))
     tmp = pd.read_csv('data_sheet.csv', header=None, index_col=0)
     select = tmp[tmp[1] > 11]
     count = copy.deepcopy(select[1])

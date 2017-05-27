@@ -33,9 +33,9 @@ not_sure['label'] = 0
 all_text = fake.append(truth, ignore_index=True)
 all_text = all_text.append(not_sure, ignore_index=True)
 # get the pure word
-all_text[0] = list(map(lambda s: remove_mess(s), all_text[0]))
+all_text['passage'] = list(map(lambda s: remove_mess(s), all_text[0]))
 # get the len
-all_text['len'] = list(map(lambda s: len(s), all_text[0]))
+all_text['len'] = list(map(lambda s: len(s), all_text['passage']))
 # get the word sequence
 print("Get the word sequence...")
 all_text['seq'] = word_seq(all_text, maxlen)
