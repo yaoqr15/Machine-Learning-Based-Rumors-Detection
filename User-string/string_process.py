@@ -11,8 +11,9 @@ def process(sentence):
     print("Build temp.csv ")
     temp = []
     temp.append(sentence)
-    keyword = list(jieba.analyse.extract_tags(sentence,5))
-    keyword = '，'.join(keyword)
+    keyword = list(jieba.analyse.extract_tags(sentence, 5))
+    tmp = '，'
+    keyword = tmp.join(keyword)
     temp.append(keyword)
     output = pd.DataFrame(temp).T
     output.to_csv("temp.csv", encoding="utf-8", header=False, index=False)

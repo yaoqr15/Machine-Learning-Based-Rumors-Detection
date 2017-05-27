@@ -44,7 +44,7 @@ def deal_with_data(file_1):
         print("File name error,please check it out!\n")
         return 1
 
-    all_text['label'] = all_text[1]
+    #all_text['label'] = all_text[1]
     # get the pure word
     all_text['passage'] = list(map(lambda s: remove_mess(s), all_text[1]))
     # get the len
@@ -91,13 +91,16 @@ model = load_model(saved_model)
 print("Predicting...")
 predict = model.predict_classes(x_cal)
 all_text['predict'] = list(predict)
-print(all_text)
+
 # 0 = not_sure   1 = truth  2 = rumor
 # ->   0              1          -1
 print("Judging...")
 result = rumor_or_not(all_text)
-passage = all_text[(all_text[0] == '果壳') & (all_text['predict'] == result)][1]
+select = all_text[(all_text[0] == '果壳') & (all_text['predict'] == result)]
+passage = select[1]
 passage = passage[0]
+url = select[2]
+url = url[0]
 if result == 2:
     temp['result'] = '谣言'
 elif result == 1:
@@ -105,6 +108,7 @@ elif result == 1:
 else:
     temp['result'] = '不确定'
 temp['passage'] = passage
+temp['url'] = url
 
 temp.to_csv("temp.csv", encoding="utf-8", header=False, index=False)
 print("Done!")
