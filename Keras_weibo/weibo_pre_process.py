@@ -6,7 +6,7 @@ import copy
 
 # ######################   initial the parameter   ####################### #
 short_text = 150
-useless_word = list(pd.read_excel("useless_1.xls",header=None)[0])
+useless_word = list(pd.read_excel("useless_2.xls",header=None)[0])
 useless_word += ['，','：','‘','’','','。','—','——',
                 '你','我','他','它','咱们','大家','自己',
                 '这','那','这儿','那边','各','每','的','了',
@@ -27,7 +27,7 @@ def cut_the_word(str_in):
         word = [x for x in tmp if x not in useless_word]
         return word
     else:
-        cut = int(0.2*length)
+        cut = int(0.35*length)
         tmp = str_in[:cut]+str_in[-cut:]
         word = list(jieba.cut(tmp, cut_all=False))
         word = [x for x in word if x not in useless_word]
@@ -37,9 +37,9 @@ def cut_the_word(str_in):
 # the function to get word sequence
 # Read from "datasheet.csv",then assign each a number
 def word_seq(x, maxlength):
-    store = list(map(lambda s: cut_the_word(s), x[0]))
-    tmp = pd.read_csv('data_sheet.csv', header=None, index_col=0)
-    select = tmp[tmp[1] > 4]
+    store = list(map(lambda s: cut_the_word(s), x['passage']))
+    tmp = pd.read_csv('data_sheet_weibo.csv', header=None, index_col=0)
+    select = tmp[tmp[1] > 2]
     count = copy.deepcopy(select[1])
     count[:] = range(1, 1 + len(count))
 

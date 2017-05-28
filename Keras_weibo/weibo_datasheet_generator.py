@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
-from pre_process import remove_mess, cut_the_word
+from weibo_pre_process import remove_mess, cut_the_word
 
 # the function to get word sequence
 # Read from "datasheet.csv",then assign each a number
@@ -10,10 +10,10 @@ def generator(x):
     for i in store:
         content += i
     tmp = pd.Series(content).value_counts()
-    tmp.to_csv("data_sheet.csv", encoding='utf-8')
+    tmp.to_csv("data_sheet_weibo.csv", encoding='utf-8')
     print("New datasheet was generated!")
 
-def get_datasheet(file_1,file_2,file_3):
+def get_datasheet3(file_1,file_2,file_3):
     # import the training data
     objection = pd.read_excel(file_1, header=None)
     support = pd.read_excel(file_2, header=None)
@@ -26,9 +26,14 @@ def get_datasheet(file_1,file_2,file_3):
 
     generator(all_text)
 
-get_datasheet("1.xlsx", "-1.xlsx", "0.xlsx")
+def get_datasheet(file_1):
+    # import the training data
+    data = pd.read_csv(file_1, header=None)
+    # get the pure word
+    data[0] = list(map(lambda s: remove_mess(s), data[0]))
 
-get = pd.read_csv("data_sheet.csv", header=None)
+    generator(data)
 
-print(get)
-print(get[0])
+#get_datasheet("1.xlsx", "-1.xlsx", "0.xlsx")
+get_datasheet("txt.csv")
+print("Done.")
