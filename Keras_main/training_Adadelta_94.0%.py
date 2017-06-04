@@ -6,6 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Embedding
 from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.utils.np_utils import to_categorical
+from keras.callbacks import EarlyStopping, CSVLogger
 from pre_process import remove_mess, cut_the_word, word_seq
 
 maxlen = 2300
@@ -92,9 +93,11 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 # Fit the model
 print('Train...')
+csv_logger = CSVLogger('training.log')
 model.fit(x_train, y_train,
           batch_size=batch_size,
-          epochs=nb_epoch)
+          epochs=nb_epoch,
+          callbacks=[csv_logger])
 
 score = model.evaluate(x_train, y_train, verbose=0)
 print('train score:', score[0])
